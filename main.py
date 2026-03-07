@@ -1,0 +1,204 @@
+from datetime import datetime, timedelta
+from locale import *
+
+setlocale(LC_TIME, 'RUS')
+
+# ===== БАЗА УРОКОВ =====
+
+lessons = [
+
+("4","№4 Фано",4),
+("11","№11",11),
+("7g","№7 графика",7),
+("7s","№7 звук",7),
+("7hard","Сложные №7 и №11",[7,11]),
+
+("1_10","№1 и №10",[1,10]),
+("6","№6 Кумир",6),
+("9","№9 таблицы",9),
+("3","№3 таблицы",3),
+("18","№18 таблицы",18),
+
+("py_arith","арифметика в Python","py"),
+("py_if","условия в Python","py"),
+("py_for","Цикл for в Python","py"),
+("py_str","Строки, индексы и срезы","py"),
+
+("2","№2 питон",2),
+("14","№14 питон",14),
+("16","№16 видеоурок",16),
+("23","№23 питон",23),
+
+("19_21","№19-21 питон",[19,20,21]),
+
+("8_1","№8 питон часть 1",8),
+("8_2","№8 питон часть 2",8),
+
+("5","№5 питон",5),
+
+("15_code","№15 шаблонный код",15),
+("15_sets","№15 отрезки и множества",15),
+
+("13_theory","№13 теория + анализ",13),
+("13_code","№13 питон",13),
+
+("17","№17 питон",17),
+
+("12_1","№12 руками ч.1",12),
+("12_2","№12 руками ч.2",12),
+
+("22_1","№22 часть 1",22),
+("22_2","№22 часть 2",22)
+
+]
+
+EGE_SCALE = {
+            0: 0, 1: 7, 2: 14, 3: 20, 4: 27, 5: 34,
+            6: 40, 7: 43, 8: 46, 9: 48, 10: 51,
+            11: 54, 12: 56, 13: 59, 14: 62, 15: 64,
+            16: 67, 17: 70, 18: 72, 19: 75, 20: 78,
+            21: 80, 22: 83, 23: 85, 24: 88, 25: 90,
+            26: 93, 27: 95, 28: 98, 29: 100
+        }
+
+# ===== ВВОД ДАННЫХ =====
+
+hours = int(input("Часов в неделю: "))
+
+known = list(map(int,input("Какие номера уже умеет (через запятую): ").split(",")))
+
+programming = input("Знает программирование? (y/n): ")
+
+start_date_str = input("Дата старта (дд.мм): ")
+
+start_date = datetime.strptime(start_date_str + ".2026", "%d.%m.%Y")
+
+# ===== СКОЛЬКО ЗАНЯТИЙ В НЕДЕЛЮ =====
+
+if hours <= 4:
+    lessons_per_week = 1
+elif hours <= 6:
+    lessons_per_week = 2
+else:
+    lessons_per_week = 3
+
+# ===== ФИЛЬТРУЕМ УРОКИ =====
+
+filtered = []
+future_tasks = set()
+
+for code,name_lesson,task in lessons:
+
+    if task == "py" and programming == "y":
+        continue
+
+    if isinstance(task,list):
+
+        if any(t not in known for t in task):
+            filtered.append((name_lesson,task))
+            future_tasks.update(task)
+
+    elif isinstance(task,int):
+
+        if task not in known:
+            filtered.append((name_lesson,[task]))
+            future_tasks.add(task)
+
+    else:
+        filtered.append((name_lesson,[]))
+
+# ===== СОЗДАЕМ ПЛАН =====
+
+weeks = [[] for _ in range(8)]
+
+lesson_index = 0
+lesson_counter = 0
+
+for week in range(8):
+
+    for i in range(lessons_per_week):
+
+        # пробник каждые ~5 занятий
+        if lesson_counter != 0 and lesson_counter % 5 == 0:
+
+            weeks[week].append("Итоговое повторение + Пробник + анализ ошибок")
+
+        elif lesson_index < len(filtered):
+
+            lesson_name, tasks = filtered[lesson_index]
+
+            weeks[week].append(lesson_name)
+
+            lesson_index += 1
+
+        lesson_counter += 1
+
+# ===== МЕСЯЦЫ =====
+
+months = {
+1:"ЯНВАРЬ",2:"ФЕВРАЛЬ",3:"МАРТ",4:"АПРЕЛЬ",5:"МАЙ",6:"ИЮНЬ",
+7:"ИЮЛЬ",8:"АВГУСТ",9:"СЕНТЯБРЬ",10:"ОКТЯБРЬ",11:"НОЯБРЬ",12:"ДЕКАБРЬ"
+}
+
+# ===== ВЫВОД =====
+
+print()
+print(f"Привет) Пишу план на 2 месяца.\n")
+print('📝Перед началом рекомендую почитать мои советы, как эффективнее готовиться в плане запоминания материала.')
+print('Займет 5 минут времени, но если будешь этому следовать, результаты будут сильно круче')
+print("""Вот тут
+\nhttps://t.me/itets37/2530
+\nhttps://t.me/itets37/2531""")
+print('---------------------')
+
+print("Как лучше распределить время:\n")
+
+if hours == 5 or hours == 4 :
+    print("1️⃣ 1 день — веб 2 часа. С ним прям работаешь: ставь на паузу, пробуй решать сам.")
+    print("2️⃣ Перед следующим занятием 30 минут порешай домашку с прошлого занятия уровня (Б).")
+    print("3️⃣ Потом следующее занятие. И так по кругу.\n")
+    if hours == 4:
+        print('P.S. Да, понимаю, что так получится по 5 часов. Но без домашки вообще будет грустно, просто поверь(. По возможности найди по 30 минут лишних каждый день🙏')
+elif hours == 6:
+    print("1️⃣ 1 день — веб 2 часа. С ним прям работаешь: ставь на паузу, пробуй решать сам.")
+    print("2️⃣ Сразу после занятия - 30 минут решаем домашку уровня (Б) ")
+    print("3️⃣ Перед следующим занятием 30 минут - еще домашку с прошлого уровня (Б).")
+    print("4️⃣ Потом следующее занятие. И так по кругу.\n")
+elif 7 <= hours <= 8:
+    print("1️⃣ Делаешь 3 дня в неделю = 3 веба по 2 часа. С каждым прям работаешь: ставь на паузу, пробуй решать сам.")
+    print("2️⃣ Перед очередным занятием 30 минут - еще домашку с прошлого уровня (Б). ")
+    print("3️⃣ Потом смотришь следующее занятие. И так по кругу.")
+
+
+current_month = None
+
+for i,week in enumerate(weeks):
+
+    start = start_date + timedelta(days=7*i)
+    end = start + timedelta(days=6)
+
+    if start.month != current_month:
+
+        current_month = start.month
+        print(months[current_month])
+        print()
+
+    start_text = f"{start.day} {start.strftime('%B').lower()}"
+    end_text = f"{end.day} {end.strftime('%B').lower()}"
+
+    print(f"Неделя {i+1} ({start_text} - {end_text})")
+
+    for lesson in week:
+        print("-",lesson)
+
+    print()
+
+# ===== ИТОГОВЫЕ ЗАДАНИЯ =====
+
+all_tasks = set(known) | future_tasks
+
+print("✅По итогу ты будешь уметь решать задания:\n")
+
+print(",".join(map(str,sorted(all_tasks))))
+
+print(f'Это получится {EGE_SCALE[len(all_tasks)]} баллов за ЕГЭ🔥')
