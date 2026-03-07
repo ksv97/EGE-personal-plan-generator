@@ -169,6 +169,8 @@ elif 7 <= hours <= 8:
     print("2️⃣ Перед очередным занятием 30 минут - еще домашку с прошлого уровня (Б). ")
     print("3️⃣ Потом смотришь следующее занятие. И так по кругу.")
 
+print(f'------------------------------\n📌Сам план ниже. Исхожу из расчета, что ты умеешь решать задачи {known}')
+print(f'И из того, что с программированием {"все ок" if programming == "y" else "не очень"}\n')
 
 current_month = None
 
@@ -180,7 +182,7 @@ for i,week in enumerate(weeks):
     if start.month != current_month:
 
         current_month = start.month
-        print(months[current_month])
+        print(f'⭐️{months[current_month]}')
         print()
 
     start_text = f"{start.day} {start.strftime('%B').lower()}"
@@ -202,3 +204,4 @@ print("✅По итогу ты будешь уметь решать задани
 print(",".join(map(str,sorted(all_tasks))))
 
 print(f'Это получится {EGE_SCALE[len(all_tasks)]} баллов за ЕГЭ🔥')
+print('Норм? Есть ли какие-то вопросы\пожелания\предложения?)')
