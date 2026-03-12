@@ -96,13 +96,11 @@ for code,name_lesson,task in lessons:
 
         if any(t not in known for t in task):
             filtered.append((name_lesson,task))
-            future_tasks.update(task)
 
     elif isinstance(task,int):
 
         if task not in known:
             filtered.append((name_lesson,[task]))
-            future_tasks.add(task)
 
     else:
         filtered.append((name_lesson,[]))
@@ -127,6 +125,7 @@ for week in range(8):
         elif lesson_index < len(filtered):
 
             lesson_name, tasks = filtered[lesson_index]
+            future_tasks |= set(tasks)
 
             weeks[week].append(lesson_name)
 
@@ -173,7 +172,8 @@ elif 7 <= hours <= 8:
     print("2️⃣ Перед очередным занятием 30 минут - еще домашку с прошлого уровня (Б). ")
     print("3️⃣ Потом смотришь следующее занятие. И так по кругу.")
 
-print(f'------------------------------\n📌Сам план ниже. Исхожу из расчета, что ты умеешь решать задачи {known}')
+print('------------------------------')
+print(f'📌Сам план ниже. Исхожу из расчета, что ты умеешь решать задачи {",".join(str(num) for num in (sorted(known)))}')
 print(f'И из того, что с программированием {"все ок" if programming == "y" else "не очень"}\n')
 
 current_month = None
@@ -208,5 +208,5 @@ print("✅По итогу ты будешь уметь решать задани
 print(",".join(map(str,sorted(all_tasks))))
 
 print(f'Это получится {EGE_SCALE[len(all_tasks)]} баллов за ЕГЭ🔥')
-print('P.S. В плане пробников. Бери те, которые не решал, начиная с пробника №1. \nПеред пробником повторяй все, потом решай и сверяйся по разборам. Разбирай ошибки. Можешь писать мне по своим вопросам) Это важно делать, чтобы себя проверять в полевых условиях')
-print('Норм? Есть ли какие-то вопросы\пожелания\предложения?)')
+print('\n👉P.S. В плане пробников. Бери те, которые не решал, начиная с пробника №1. \nПеред пробником повторяй все, потом решай и сверяйся по разборам. Разбирай ошибки. Можешь писать мне по своим вопросам) Это важно делать, чтобы себя проверять в полевых условиях')
+print('\nНорм? Есть ли какие-то вопросы\пожелания\предложения?)')
